@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:beans="http://www.springframework.org/schema/beans"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+            http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+			
+			<bean id="tv" class="com.yedam.app.spring.TV"></bean>
+			
+			
+			<!-- DI : XML 방식 -->
+			<bean id="cf" class="com.yedam.app.xml.Chef" />
+			<bean class="com.yedam.app.xml.Restaurant">
+				<!-- 생성자 인젝션 / ref="참조"(bean의 id 속성값) -->
+				<!-- <constructor-arg ref="cf" /> -->
+				<!-- 세터 인젝션 -->
+				<!--<property name="chef" ref="cf" />-->
+			</bean>
+
+
+			<!-- DI : 어노테이션 방식 -->
+			<!--<context:component-scan base-package="com.yedam.app.anotation" />-->
+				<!-- 
+				context:component-scan -> 스프링 내부의 어노테이션을 검색할 때 쓰인다
+				base-package="패키 지명"을 통해 스캔 범위를 정할 수 있다
+				 -->
+				 
+			<!-- DI : 자바 베이스 방식 -->
+			<context:component-scan base-package="com.yedam.app.javabase" />
+</beans>
