@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yedam.app.emp.mapper.EmpMapper">
+	<!-- 전체조회 -->
+	<select id="selectEmpAllList" resultType="EmpVO">
+		SELECT employee_id, first_name, last_name, email, phone_number, hire_date, job_id, salary, commission_pct, manager_id, department_id 
+		FROM employees 
+		<!-- Dynamic sql : 검색 조건(if문)이 없을 땐 where절이 생성되지 않는다 / test 문은 자바영역 (필드명이 와야한다), 필드 기준으로 조건문 -->
+		<where>
+			<if test="departmentId > 0">
+				OR department_id = #{departmentId}
+			</if>
+			<if test="jobId != null and !jobId.equals('')">
+				OR job_id = #{jobId}
+			</if>
+		</where>
+		<!-- where department_id=100 -->
+		ORDER BY employee_id
+	</select>
+	
+	<!-- 단건조회 -->
+	<select id="selectEmpInfo" resultType="EmpVO">
+		SELECT employee_id, first_name, last_name, email, phone_number, hire_date, job_id, salary, commission_pct, manager_id, department_id 
+		FROM employees 
+		WHERE employee_id=#{employeeId}
+		<!--
+		#{} : PreparedStatement => 데이터 타입에 따른 작업
+		${} : Statement 		=> 데이터 타입 상관하지 않음
+		-->  
+	</select>
+
+	<!-- 등록 : 
+	salary 의 check 제약조건 / double로 설정 했기 때문에, 0을 주면 안된다
+	if문이 사라질 때 if문 내 , 까지 함께 삭제하기 위함
+	choose : 하나의 조건에 대해서만 true, false 체크 (when 절을 기반으로 한다, column은 수정이없다, 값이 나눠진다면 if보단 choose 권장)
+	otherwise : else
+	-->
+	<insert id="insertEmpInfo" parameterType="EmpVO">
+		
+		<selectKey keyProperty="employeeId"
+				   resultType="Integer"
+				   order="BEFORE">
+		SELECT NVL(MAX(employee_id), 0) + 1
+		FROM employees
+		</selectKey>
+		
+		INSERT INTO employees(employee_id
+							  , last_name
+							  , email
+							  , hire_date
+							  , job_id
+							  <if test="salary > 0">
+							  , salary
+							  </if>)
+		VALUES (#{employeeId}
+				, #{lastName}
+				, #{email}
+				<choose>
+					<when test="hireDate != null">
+					, #{hireDate}
+					</when>
+					<otherwise>
+					, sysdate
+					</otherwise>
+				</choose>
+				, #{jobId}
+				<if test="salary > 0">
+				, #{salary}
+				</if>)
+	</insert>
+	
+	<!-- 수정 : 
+	@Params 사용, parameterType 을 기재 X
+	필드명 앞에 Params 에 선언된 이름을 기재 후 사용 ("id", "emp")
+	+) Dynamic sql 에서 사용하는 조건식에서도 동일하게 Params 중심으로 사용
+	-->
+	<update id="updateEmpInfo">
+		UPDATE employees
+		SET last_name = #{emp.lastName}
+		    , job_id = #{emp.jobId}
+		    <if test="emp.salary > 0">
+		    , salary = #{emp.salary}
+		    </if>
+		WHERE employee_id = #{id}
+	</update>
+	
+	<!-- 삭제 : 매개변수와 이름은 상관이없다(int타입 / mybatis의 특징) / 이름을 쫓는게 아닌 가지고있는 데이터 타입에 따라 처리 -->
+	<delete id="deleteEmpInfo" parameterType="int">
+		DELETE FROM employees
+		WHERE employee_id=#{eid}
+	</delete>
+</mapper>
