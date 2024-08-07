@@ -2,11 +2,14 @@ package com.yedam.app.emp.service;
 
 import java.util.Date;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 import lombok.Data;
 
 
 @Data
 public class EmpVO {
+	
 	
 	//employee_id => employeeId (mybatis.configuration.map-underscore-to-camel-case=true)
 	private Integer employeeId; //Integer -> 공백 처리를 위함(null값이 넘어올 경우를 대비, 참조타입으로 기재)
@@ -14,6 +17,8 @@ public class EmpVO {
 	private String lastName;
 	private String email;
 	private String phoneNumber;
+	
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private Date hireDate;
 	
 	//초깃값 null -> test 조건문에 jobId != null을 쓰는 이유

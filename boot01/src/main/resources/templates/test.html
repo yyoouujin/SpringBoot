@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org/">
+<head>
+<meta charset="UTF-8">
+<title>타임리프 실습</title>
+</head>
+<body>
+	<h1>테슷흐</h1>
+	<!-- thymeleaf, 유일한 태그 block : 반복문에서 발생하는 문제점을 해결하기 위해(반복문이 반복하고자 하는 대상을 구분짓도록 블록처리!) -->
+	<th:block th:each=" num : ${#numbers.sequence(1,5)} ">
+		<p th:text="${num}" />
+	</th:block>
+</body>
+</html>
