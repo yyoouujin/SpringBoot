@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org/">
+<head>
+<meta charset="UTF-8">
+<title>수정</title>
+<!-- JQuery CDN 추가(구글 cdn 3버전) -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+</head>
+<body>
+	<h1>수정</h1>
+	<form name="updateForm" th:object="${emp}">
+		<div>
+			<label for="eid">사원번호</label>
+			<input type="text" id="eid" name="employeeId" th:field="*{employeeId}" readonly />
+		</div>
+		<div>
+			<label for="ename">이름</label>
+			<input type="text" id="ename" name="lastName" th:field="*{lastName}" />
+		</div>
+		<div>
+			<label for="email">이메일</label>
+			<input type="email" id="email" name="email" th:field="*{email}" />
+		</div>
+		<div>
+			<label for="hDate">입사일</label>
+			<!-- <input type="date" id="hDate" th:value="${#dates.format(emp.hireDate, 'yyyy-MM-dd')}" readonly /> -->
+			<input type="date" id="hDate" name="hireDate" th:field="*{hireDate}" />
+		</div>
+		<div>
+			<label for="job">업무</label>
+			<input type="text" id="job" name="jobId" th:field="*{jobId}" />
+		</div>
+		<div>
+			<label for="sal">급여</label>
+			<input type="number" id="sal" name="salary" th:field="*{salary}" />
+		</div>
+			
+		<div>
+			<button type="button" id="updateBtn">저장</button>
+		</div>
+	</form>
+</body>
+</html>
+
+
+
+<script>
+
+	$('#updateBtn').on('click', updateAjax);
+	
+	function updateAjax() {
+
+		//1) 보낼 데이터 가져오기 : 개별의 데이터들을 하나의 변수에 담아줘야한다
+		
+		let dataObj = getFormData();
+		//2) AJAX
+		$.ajax('empUpdate', {
+			
+			/*
+			// 2-1) QueryString 형식으로 보내기
+			type : 'POST', //method : 해당 컨트롤러에 접근하는 method (수정 : @PostMapping)
+			//contentType : '', //default가 QueryString이다
+			data : dataObj //body(객체타입으로 구성되어야한다)
+			*/
+			
+			// 2-2) JSON 형식으로 보내기
+			type : 'POST',
+			contentType : 'application/json',
+			data: JSON.stringify(dataObj)
+			
+		})
+		.done(result => {
+			console.log(result);
+		})
+		.fail(err => console.log(err));
+
+	}
+	
+	
+	
+	/*
+	{
+		employeeId : 893,
+		lastName : "yujin",
+		email : "yujin@gmail.com",
+		hireDate : "2024-08-12",
+		jobId : "IT_PROG",
+		salary : 12000.0
+	}
+	*/
+	
+	function getFormData(){
+		
+		let formAry = $('form[name="updateForm"]').serializeArray();
+		
+		let formObj = {};
+		$.each(formAry, function(idx, tag){
+			//console.log(idx, tag);
+			//console.log('key', tag.name);
+			//console.log('value', tag.value);
+			//console.log(tag.name + ':' + tag.value);
+			formObj[tag.name] = tag.value;
+
+		});
+		
+		console.log(formObj);
+		return formObj;
+	
+	}
+	
+	
+
+</script>
+
+
+
+
+
+
+
+
+<!--/*
+
+form 태그는 ajax 에서도 많이 쓰인다 (submit만 일으키지 않을 뿐!)
+
+action 과 method 가 없어도 submit 은 발동된다! (ex 새로고침)
+ : 통신을 위해 사용하는지, 다른 목적을 위해 사용하는지 잘 구분해서 내부 버튼을 제어하자
+ * from 태그 내 type="button"이 생략되면 default 는 submit 인 점 주의
+
+
+1)
+*{object}
+: 객체 선택 변수식으로 th:object에서 선택한 객체에 접근한다.
+(객체 내부에 존재하는 변수 즉, 필드를 가르킨다)
+
+
+2)
+폼 태그에 th:object="${변수명}" 속성을 사용해 model에서 전달한 객체의 이름을 넣어주고 사용하게 된다.
+=>
+변수명은 컨트롤러의 model 이 붙여주는 key 값과 동일해야한다 ("emp")
+model.addAttribute("emp", findVO);
+
+
+3)
+th:field 추가 시 HTML 태그의 id, name, value 속성을 자동 처리해준다
+(id 속성, name 속성, value 속성을 건드린다 = 채워준다)
+->
+<input type="text" id="eid" name="employeeId" value="119"> 생성되는 것 확인
+
+
+4)
+해당 필드에 @DateTimeFormat(pattern = "yyyy-MM-dd")
+와 같이 날짜 포맷을 담당하는 부분을 가지고 있다면, 
+날짜 format 에 대한 부분은 thymeleaf 가 자동으로 처리해준다
+(input을 채울 떄 @DateTimeFormat이 같이 들어옴)
+
+
+5)
+버튼을 눌렀을 때 ajax 호출을 하기 위해 button 에 id속성을 부여
+
+
+6)
+serializeArray ?
+ : <form> 태그 내부의 값을 JSON 형태의 문자열을 배열로 리턴한다
+ 자동으로 name과 value 값이 Array 형태로 저장된다
+ (하지만 우리가 원하는 형태가 아니라 name 과 value를 변환하는 작업이 필요하다)
+ 
+ 
+7)
+원하는 형태로 name 과 value를 변환하는 작업
+formObj[tag.name] = tag.value;
+=>
+tag가 가진 name (필드값) = key
+tag가 가진 value = value 가 된다
+
+
+8)
+제이쿼리 ajax 기본골격
+->
+$.ajax('경로', { //ajax의 첫번째 매개변수는 url이다
+	type : 'POST', //method : 해당 컨트롤러에 접근하는 method (수정 : @PostMapping)
+	//contentType : '', //default가 QueryString이다
+	data : dataObj //body(객체타입으로 구성되어야한다 : 쿼리스트링을 대응하는 가장 쉬운 타입)})
+.done(result => {})
+.fail(err => console.log(err));
+		
+	+)
+	ajax 호출 후 오류 발생한다면
+	SQL에 추가
+	=> alter trigger update_job_history disable;
+
+
+
+9)
+@ResponseBody가 객체 타입으로 변환해준다!
+Payload 는 QueryString 형태인것 확인
+
+
+10)
+QueryString 타입 VS JSON 타입으로 보내기
+(EmpController 에 @PostMapping("empUpdate") 하나는 주석처리 하고!)
+
+*/-->

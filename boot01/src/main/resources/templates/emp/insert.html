@@ -1,10 +1,136 @@
 <!DOCTYPE html>
-<html>
+<html xmlns:th="http://www.thymeleaf.org/">
 <head>
 <meta charset="UTF-8">
 <title>Insert title here</title>
+
+<!-- JQuery CDN 추가(구글 cdn 3버전) -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+
 </head>
 <body>
 	<h1>등록</h1>
+	<form th:action="@{empInsert}" method="post" id="myfrm" name="insertForm">
+		<div>
+			<label for="ename">이름</label>
+			<input type="text" id="ename" name="lastName" />
+		</div>
+		<div>
+			<label for="email">이메일</label>
+			<input type="email" id="email" name="email" />
+		</div>
+		<div>
+			<label for="hDate">입사일</label>
+			<!-- <input type="date" id="hDate" th:value="${#dates.format(emp.hireDate, 'yyyy-MM-dd')}" readonly /> -->
+			<input type="date" id="hDate" name="hireDate" />
+		</div>
+		<div>
+			<label for="job">업무</label>
+			<input type="text" id="job" name="jobId" />
+		</div>
+		<div>
+			<label for="sal">급여</label>
+			<input type="number" id="sal" name="salary" />
+		</div>
+			
+		<div>
+			<button type="submit">등록</button>
+		</div>
+	</form>
 </body>
 </html>
+
+
+<script>
+
+$('form[name="insertForm"]').on('submit', insertHandler); //별도로 함수 이름을 만들어 주는 게 좋다
+function insertHandler(event){
+	
+	event.preventDefault(); //해당 이벤트에대해 핸들러 동작을 일시적으로 방지
+	
+	//이름 유효성 검사
+	let name = $('input[name="lastName"]');
+	if (name.val() == ''){
+		alert('이름이 입력되지 않았습니다.');
+		name.focus();
+		return;
+	}
+	
+	//이메일 유효성 검사
+	let email = $('input[name="email"]');
+	if (email.val() == ''){
+		alert('이메일이 입력되지 않았습니다.');
+		email.focus();
+		return;
+	}
+	
+	//입사일 유효성 검사
+	let hireDate = $('input[name="hireDate"]');
+	if (hireDate.val() == ''){
+		alert('입사일이 입력되지 않았습니다.');
+		hireDate.focus();
+		return;
+	}
+	
+	//업무 유효성 검사
+	let jobId = $('input[name="jobId"]');
+	if (jobId.val() == ''){
+		alert('업무가 입력되지 않았습니다.');
+		jobId.focus();
+		return;
+	}
+	
+	//급여 유효성 검사
+	let salary = $('input[name="salary"]');
+	if (salary.val() <= 0) {
+		alert('급여는 최소한 0보다 커야합니다.');
+		salary.focus();
+		return;
+	}
+	
+	insertForm.submit();
+	
+}
+
+</script>
+
+
+<!--/*
+
+1)
+info.html <div> 복붙하여 <form> 태그 작성
+
+2)
+메서드는 접두어 붙이지 않는다 (그냥 post)
+action 은 링크표현식을 이용해서 경로를 만들어준다
+
+<form th:action="@{empInsert}" method="post">
+->
+action을 이용해서 보내줘야 할 곳은 controller 에 기재된 @PostMapping("empInsert")
+
+
+3)
+form 태그의 name 속성은 key 값이 된다
+EmpVO가 들고있는 필드를 확인해서 하나하나 값을 불러와야한다
+
+
+4)
+form 태그의 name 속성은 전역변수로 사용이 가능하다!(name 속성을 하나의 변수로 인식)
+
+
+[내가 한 submit 이벤트 유효성 검사]
+
+$('#myfrm').submit(function (event){
+	
+	event.preventDefault(); //자동 submit 방지
+	
+	//유효성 검사 - 이름
+	if($('#ename').val()==''){
+		alert('이름을 입력하세요');		
+		event.preventDefault();
+
+	}
+	
+}
+
+*/-->

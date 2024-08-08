@@ -99,14 +99,14 @@ public class EmpController {
 	
 	
 	//수정 - 처리 : AJAX => QueryString
-	@PostMapping("empUpdate")
+	//@PostMapping("empUpdate")
 	@ResponseBody //AJAX를 의미
 	public Map<String, Object> empupdateAJAXQueryString(EmpVO empVO) {
 		return empService.empUpdate(empVO);
 	}
 	
 	//수정 - 처리 : AJAX => JSON (매개변수에 @RequestBody를 사용)
-	//@PostMapping("empUpdate")
+	@PostMapping("empUpdate")
 	@ResponseBody //AJAX를 의미
 	public Map<String, Object> empupdateAJAXJSON(@RequestBody EmpVO empVO) {
 		return empService.empUpdate(empVO); //node : res.send ... / {"retCode":"Good"}
@@ -118,7 +118,7 @@ public class EmpController {
 
 	//삭제 - 처리 (페이지를 요구하는 경우가 없다, 단건 -> 이어짐) : GET 
 	//넘기는 데이터가 별로 없어서 post 보다는 단일값을 넘기는 get 방식을 많이 사용(가능한 아작스 사용을 지양하자, redirect 하자)
-	@GetMapping
+	@GetMapping("empDelete")
 	public String empDelete(Integer employeeId) {
 		empService.empDelete(employeeId);
 		return "redirect:empList";

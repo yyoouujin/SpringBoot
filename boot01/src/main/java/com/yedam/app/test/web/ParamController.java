@@ -93,7 +93,7 @@ public class ParamController {
 		/*
 		 http://localhost:8099/path/Hong 으로 확인
 		 
-		 @PathVariable 가 누락되고(값이 누락되고) path 만 쓰게 되면 404에러 발생(다른건 400)
+		 @PathVariable 가 누락되고(값이 누락되고) path 만 쓰게 되면 404에러 발생(경로가 틀어진 에러 다른건 400)
 		 => 오류 확인
 		 "status": 404,
     	"error": "Not Found",
@@ -107,6 +107,7 @@ public class ParamController {
 	//3) @RequestBody : JSON포맷, 배열 or 객체
 	//Method : POST, PUT
 	//Content-type : Application/json
+	//requestBody => json 의 형태로 데이터를 줘야한다~ 라는 선언
 	
 		//객체 형태
 	@PostMapping("resbody")
@@ -188,9 +189,7 @@ public class ParamController {
 	@DateTimeFormat(pattern = "yyyy-MM-dd") 추가
 	후 오류 확인
 	=> 하나의 포맷만 사용 가능!
-	
-	
-	
+
 	*/
 	
 	

@@ -1,10 +1,183 @@
 <!DOCTYPE html>
-<html>
+<html xmlns:th="http://www.thymeleaf.org/">
 <head>
 <meta charset="UTF-8">
-<title>Insert title here</title>
+<meta name="context" th:value="${contextPath}">
+
+<title>전제조회</title>
+
+<!-- JQuery CDN 추가(구글 cdn 3버전) -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+
 </head>
 <body>
-	<h1>전체조회</h1>
+	<div>
+		<h1>전체 사원 조회</h1>
+		<table>
+			<thead>
+				<tr>
+					<th>NO.</th>
+					<th>사원번호</th>
+					<th>이름</th>
+					<th>입사일자</th>
+					<th>업무</th>
+				</tr>
+			</thead>
+			<tbody>
+				<th:block th:each=" info, stats : ${emps}">
+					<!-- 반복하고자 하는 태그 (tr이 실제 사원의 수만큼 생성) -->
+					<!--/* <tr th:onClick="|location.href='@{/empInfo(employeeId=${info.employeeId})}'|">  */-->
+					<tr>
+						<td>[[ ${stats.count} ]]</td>
+						<td th:text="${info.employeeId}"></td>
+						<td th:text="${info.lastName}"></td>
+						<td>[[ ${#dates.format(info.hireDate, 'yyyy년 MM월 dd일')} ]]</td>
+						<td>[[ ${info.jobId} ]]</td>
+					</tr>
+				</th:block>
+			</tbody>
+		</table>
+	</div>
+	
+	<script>
+		const context = $('meta[name="context"]').attr('value');
+		
+		$('tbody > tr').on('click', function(event){
+			let tr = event.currentTarget;
+			
+			let eid = $(tr).children().eq(1).text();
+			//let url = '/yedam/empInfo?employeeId=' + eid;
+			let url = context + '/empInfo?employeeId=' + eid; //contextpath meta태그 추가
+			location.href=url;
+
+		});
+		
+	</script>
+
 </body>
 </html>
+
+
+
+
+
+<!--/*
+	[타임리프]
+1)
+이 페이지를 호출하는 EmpController 내 "emps"는 list 타입
+(block 을 쓰는 이유, 실행 후 block 태그는 사라지게된다)
+
+2)
+반복하고자 하는 태그
+=> tr : 실제 사원의 수만큼 / td : 위쪽의 th 갯수만큼
+<tr>
+	<td></td>
+	<td></td>
+	<td></td>
+	<td></td>
+	<td></td>
+</tr>
+
+3)
+임시변수 'info' 는 반복문 내에서만 사용이 가능 (반복문 block 을 벗어날 수 없다)
+
+4)
+empVO가 가진 필드명을 사용 (getter, setter 를 쓴다는 가정 하에!)
+
+5)
+타임리프의 내장객체 #dates 활용(변수 표현식 내에서 사용)
+${#dates.format(date, 'dd/MMM/yyyy HH:mm')} -> simple date 포맷 그대로 사용(대소문자 구분)
+참고 : https://ssd0908.tistory.com/entry/thymeleaf-%ED%83%80%EC%9E%84%EB%A6%AC%ED%94%84-%EB%82%A0%EC%A7%9C-date-format-%EB%B3%80%ED%99%98
+
+6)
+th:each=" info : ${emps}" 
+ -> 순환 for 문
+ 
+th:each=" info, stats : ${emps}" 
+ -> stats 는 반복문의 상태값을 가져온다(두번째 옵션 : 반복문에서 필요한 값을 가져올 때 선언!)
+"stats" 가 상태값을 가지는 변수가 된다 => 필드값으로 바로 호출하면 된다
+
+상태 변수를 명시적으로 설정하지 않으면 Thymeleaf는 항상 반복 변수 이름에 Stat을 접미사로 만들어 생성한다
+ex) index, count, size, even, odd, first, last, curent
+(index -> 0부터 시작, count -> 1부터 시작)
+
+7)
+링크표현식으로 onClick 이벤트 걸어주기
+ : 링크 표현식은 경로를 생성, 표현식이 중첩되면 혼란을 준다
+ (=> 링크표현식의()내에선 변수표현식을 사용가능, 
+ 괄호 내의 내용을 쿼리스트링으로 만들어서 경로 뒤에 붙여주게된다, 
+ 여러개의 key=value를 넘길 땐 &대신 , 를 사용)
+ => <tr th:onClick="|location.href='@{/empInfo(employeeId=${info.employeeId})}'|">
+ 이벤트 처리를 따로 해주는것을 권장!(addEventListener를 사용하장)
+
+*/-->
+
+
+
+
+
+
+<!--/*
+	[제이쿼리]
+1)	
+location.href=url;
+=> location 은 현재 페이지의 경로를 보여준다 (해당 값을 바꾸면 페이지를 이동하는것)
+<tr onClick=""> 과 같다!
+
+
+2)
+target VS currentTarget?
+:target - 이벤트가 발생했을 때 target은 고정값 (target은 해당 상위 요소 중 가장 가까운 요소)
+
+currentTarget - 버블링을 통해 거쳐가는 대상을 가르킨다(유동값) / 이벤트를 건 대상을 의미!
+currentTarget : 현재 동작되고 있는 대상 (이벤트가 등록 된 대상)
+
+참고 : https://velog.io/@hi6863/JS-event-target%EA%B3%BC-currentTarget%EC%9D%98-%EC%B0%A8%EC%9D%B4
+
+
+3)
+eq(index) - 인덱스 선택자
+ : 숫자가 의미하는 해당 태그를 선택
+
+
+4)
+meta 태그에 컨텍스트 패스를 내장객체를 활용하여 추가(/yedam 이 필요)
+<meta name="contextPath" th:value="${#httpServletRequest.getContextPath()}">
+->
+타임리프 3.1 버전에서부턴 화면단에서 httpServletRequest 접근을 막았음 ㅜ.ㅜ (WebControllerAdvice클래스 참고)
+그래서!
+[com.yedam.app.common.config 패키지 내 WebControllerAdvice 작성]
+=>
+이후에 해당 메타태그 최상단에 추가
+<meta name="contextPath" th:value="${contextPath}">
+
+
+URL -> /yedam/empInfo?employeeId=100
+/yedam -> conTextPath라서 변경되면 안된다
+eid 또한 변수를 사용해야함
+
+location.href='@{/yedam/empInfo?employeeId=100}' -> 링크표현식 안에 표현식이 중첩되면 타임리프에게 혼돈을 줄 수 있다
+location.href='@{/yedam/empInfo(employeeId=${info.employeeId})}'
+location.href='@{/yedam/empInfo(employeeId=${info.employeeId}, key=${})}' -> 넘겨줄 값이 여러개일 때
+
+
+5)
+링크표현식으로 onClick 이벤트 걸어주기
+ : 링크 표현식은 경로를 생성, 표현식이 중첩되면 혼란을 준다
+ (=> 링크표현식의()내에선 변수표현식을 사용가능, 
+ 괄호 내의 내용을 쿼리스트링으로 만들어서 경로 뒤에 붙여주게된다, 
+ 여러개의 key=value를 넘길 땐 &대신 , 를 사용)
+ => <tr th:onClick="|location.href='@{/empInfo(employeeId=${info.employeeId})}'|">
+ 이벤트 처리를 따로 해주는것을 권장!
+ 
+
+6)
+location.href='@{/empInfo(employeeId=${info.employeeId})}'
+=> 문자열과 컴파일 대상이 뒤섞여있는 상태
+
+|location.href='@{/empInfo(employeeId=${info.employeeId})}'|
+=>
+|| : 내부에 있는 타임리프 문법을 모두 해석, 하나의 문자열로 만들어주는 리터럴 대체식
+('' -> 홀따옴표 사용 시 이스케이프 문자열 추가해야하는 불편함)
+
+*/-->

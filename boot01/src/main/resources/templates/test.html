@@ -7,8 +7,47 @@
 <body>
 	<h1>테슷흐</h1>
 	<!-- thymeleaf, 유일한 태그 block : 반복문에서 발생하는 문제점을 해결하기 위해(반복문이 반복하고자 하는 대상을 구분짓도록 블록처리!) -->
-	<th:block th:each=" num : ${#numbers.sequence(1,5)} ">
+	<th:block th:each=" num : ${#numbers.sequence(1,2)} ">
 		<p th:text="${num}" />
 	</th:block>
+	
+	<!--/* 
+	thymeleaf, 유일한 태그 [[]] : 자바의 백틱같은 느낌(html 주석 안에 사용할 수 없다, 주석 내 타임리프 문법이 섞이게 되면 에러 확인)
+	타임리프 파서 주석 : 서버가 파일을 열 때 주석까지 삭제(source탭에서도 안보임, 브라우저 내에서 원본까지 삭제)
+	*/-->
+	<th:block th:each=" num : ${#numbers.sequence(1,2)} ">
+		<p th:text="${num}" />
+	</th:block>
+	
+	<!--/*
+		타임리프 기본방식
+		(값을 주고자 하는 속성 앞에 th 접두어를 붙이고, 그 영역은 자바영역이 된다)
+		=>
+		1) 변수 표현식
+			th:속성="${}"
+			문자열도 연결할 수 있다
+			
+		2) URL 링크 표현식
+			th:src="@{}" / th:href="@{}" / th:action="@{}"
+			절대경로가 추가되어도 링크표현식을 쓰게되면 자동적으로 잡아준다
+			() 참고 (list.html 파일 내 주석 기재)
+		
+		3) 리터럴 대체
+			th라는 접두어가 붙으면 자바의 영역으로 인식
+			|| 또는 ''로 리터럴 처리
+		
+		4) 객체 선택
+		
+	*/-->
+	<a th:href="@{/empList}" th:text="|전체조회 (타임리프 문법)|" />
+	<br /><a href="empList">전체조회(html 문법)</a>
+	<hr>
+	<!--/* [[]] : 타임리프의 영역과 일반 텍스트 영역을 구분시켜 줄 때도 사용(동적으로 서버가 보내줘야 하는 부분을 나눌때) */-->
+	<p>사원정보 : [[ ${empInfo} ]]</p>
+	<hr>
+	<p th:id="${empInfo.employeeId}"
+	   th:name="${empInfo.lastName}"
+	   th:text="${empInfo.jobId + ', ' + empInfo.departmentId}">
+	</p>
 </body>
 </html>

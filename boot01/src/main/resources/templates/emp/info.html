@@ -1,10 +1,114 @@
 <!DOCTYPE html>
-<html>
+<html xmlns:th="http://www.thymeleaf.org/">
 <head>
 <meta charset="UTF-8">
-<title>Insert title here</title>
+<title>단건조회</title>
 </head>
 <body>
-	<h1>단건조회</h1>
+	<h3>사원 정보 조회</h3>
+	<div>
+	<table>
+		<div>
+			<label for=eid>사원번호</label>
+			<input type="text" id="eid" th:value="${emp.employeeId}" readonly />
+		</div>
+		<div>
+			<label for="ename">이름</label>
+			<input type="text" id="ename" th:value="${emp.firstName}" readonly />
+		</div>
+		<div>
+			<label for="email">이메일</label>
+			<input type="email" id="email" th:value="${emp.email}" readonly />
+		</div>
+		<div>
+			<label for="hDate">입사일</label>
+			<!-- <input type="date" id="hDate" th:value="${#dates.format(emp.hireDate, 'yyyy-MM-dd')}" readonly /> -->
+			<input type="text" id="hDate" th:value="${#dates.format(emp.hireDate, 'yyyy년 MM월 dd일')}" readonly />
+		</div>
+		<div>
+			<label for="job">업무</label>
+			<input type="text" id="job" th:value="${emp.jobId}" readonly />
+		</div>
+		<div>
+			<label for="sal">급여</label>
+			<input type="number" id="sal" th:value="${emp.salary}" readonly />
+		</div>
+		
+		<div>
+			<button type="button" th:onClick="|location.href='@{/empUpdate(employeeId=${emp.employeeId})}'|">수정</button>
+			<button type="button" th:onClick="|location.href='@{/empList}'|">목록</button>
+			<button type="button" th:onClick="|location.href='@{/empDelete(employeeId=${emp.employeeId})}'|">삭제</button>
+		</div>
+	</table>
+	</div>
 </body>
 </html>
+
+
+
+<!--/*
+
+1)
+EmpController 의 단건조회 시 넘어오는 데이터
+model.addAttribute("emp", findVO) 확인 (어노테이션 없이 객체만 선언되어있으면 -> 커멘드객체 => QueryString형태 => key=value 형태로 !)
+controller 에서 받아온 "emp" 는 사실상 null값을 가지고 있다 
+@GetMapping -> Get 메소드는 ? 형태로 데이터를 받는다!
+ 
+http://localhost:8099/yedam/empInfo
+=>
+EL1007E: Property or field 'employeeId' cannot be found on null
+조회할 데이터가 없어서 오류 확인 (nullPoint)
+
+Controller를 기반으로 어떻게 값을 넘길건지?
+QueryString 의 형태로!(커멘드 객체)
+EmpVO의 필드 중에서 넘겨줄 대상을 선택해서 (key가 된다) 그 대상을 QueryString 형태로 조회
+=>
+http://localhost:8099/yedam/empInfo?employeeId=100
+
+
+2)
+input type="date" 포맷으로 날짜 형식 맞춰주기
+
+input 박스 내 입사날짜 확인 -> value="Tue Jun 17 00:00:00 KST 2003"
+[[ ${#dates.format(emp.hireDate, 'yyyy-MM-dd')} ]]
+<input type="date">의 값은 연도와 월, 일을 포함하지만 시간은 포함하지 않습니다
+
+@DateTimeFormat(pattern = "yyyy-MM-dd")
+EmpVO 내 사용 된 format 때문에 일치시켜줘야한다!
+
+
+3)
+[목록 버튼]
+location.href='/yedam/empList'
+|location.href='@{/empList}'|
+
+
+4)
+[수정 버튼]
+location.href='/yedam/empUpdate?employeeId=100'
+|location.href='@{/empUpdate(employeeId=${emp.employeeId})}'|
+
+모델을 사용해서 넘어오는 데이터의 값은 그대로 읽어올 수 있다 (위쪽에서 사용한 값을 그대로 들고옴)
+
+컨트롤러의 수정 메서드 확인
+public String empUpdateForm(EmpVO empVO, Model model)
+=> 
+어노테이션이 없고, 객체타입이다 = 커맨드 객체를 쓴다 => 커맨드 객체가 처리하는 content-type 은 form-url-encoded (QueryString)
+@GetMapping 을 사용중(Query String)
+
+
+5)
+[삭제 버튼]
+컨트롤러의 삭제 메서드 확인
+public String empDelete(Integer employeeId)
+=>
+단일 값으로 처리
+(단일 값일땐 기본 매개변수의 값을 검색한다)
+
+
+
+
+
+
+
+*/-->
