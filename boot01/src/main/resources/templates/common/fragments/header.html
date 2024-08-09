@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<div xmlns:th="http://www.thymeleaf.org/" th:fragment="HeaderFrag">
+
+<nav class="nav">
+  <a class="nav-link active" aria-current="page" th:href="@{/empList}">전체사원조회</a>
+  <a class="nav-link" th:href="@{/empInsert}">사원등록</a>
+  <a class="nav-link disabled" aria-disabled="true">Disabled</a>
+</nav>
+
+</div>
+
+
+<!--/* 
+1)
+header 는 보통 페이지 단위로 진행!
+-> 
+html 태그 사용 안해도 된다 (div 가능 : 레이아웃의 일부분으로 들어가기때문)
+
+2)
+bootstrap 에서 스타일 긁어옴!
+(https://getbootstrap.com/docs/5.3/components/navs-tabs/)
+
+3)
+
+*/-->

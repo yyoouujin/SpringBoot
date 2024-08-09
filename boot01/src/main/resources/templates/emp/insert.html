@@ -1,11 +1,17 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org/">
+<html xmlns:th="http://www.thymeleaf.org/"
+	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	  layout:decorate="~{common/layouts/default_layout}"
+	  layout:fragment="Content">
 <head>
 <meta charset="UTF-8">
 <title>Insert title here</title>
 
-<!-- JQuery CDN 추가(구글 cdn 3버전) -->
+<!--/* JQuery CDN 추가(구글 cdn 3버전) 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+*/-->
+
+<th:block th:replace="~{/common/config/default_config :: jQueryConfig}"></th:block>
 
 </head>
 <body>
@@ -34,7 +40,7 @@
 		</div>
 			
 		<div>
-			<button type="submit">등록</button>
+			<button type="submit" class="btn btn-outline-primary">등록</button>
 		</div>
 	</form>
 </body>
@@ -117,7 +123,7 @@ EmpVO가 들고있는 필드를 확인해서 하나하나 값을 불러와야한
 4)
 form 태그의 name 속성은 전역변수로 사용이 가능하다!(name 속성을 하나의 변수로 인식)
 
-
+=====
 [내가 한 submit 이벤트 유효성 검사]
 
 $('#myfrm').submit(function (event){
@@ -128,9 +134,18 @@ $('#myfrm').submit(function (event){
 	if($('#ename').val()==''){
 		alert('이름을 입력하세요');		
 		event.preventDefault();
-
-	}
-	
+	}	
 }
+====
+
+5)
+수정에서 사용하는 아래 정보완 다르게, 등록은 form 태그의 name 속성만 잘 맞춰줘도 된다!
+
+th:field 추가 시 HTML 태그의 id, name, value 속성을 자동 처리해준다
+(id 속성, name 속성, value 속성을 건드린다 = 채워준다)
+->
+<input type="text" id="eid" name="employeeId" value="119"> 생성되는 것 확인
+
+
 
 */-->

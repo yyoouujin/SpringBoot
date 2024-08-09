@@ -1,5 +1,8 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org/">
+<html xmlns:th="http://www.thymeleaf.org/"
+	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	  layout:decorate="~{common/layouts/default_layout}"
+	  layout:fragment="Content">
 <head>
 <meta charset="UTF-8">
 <title>단건조회</title>
@@ -35,9 +38,9 @@
 		</div>
 		
 		<div>
-			<button type="button" th:onClick="|location.href='@{/empUpdate(employeeId=${emp.employeeId})}'|">수정</button>
-			<button type="button" th:onClick="|location.href='@{/empList}'|">목록</button>
-			<button type="button" th:onClick="|location.href='@{/empDelete(employeeId=${emp.employeeId})}'|">삭제</button>
+			<button type="button" class="btn btn-outline-success" th:onClick="|location.href='@{/empUpdate(employeeId=${emp.employeeId})}'|">수정</button>
+			<button type="button" class="btn btn-outline-primary" th:onClick="|location.href='@{/empList}'|">목록</button>
+			<button type="button" class="btn btn-outline-danger" th:onClick="|location.href='@{/empDelete(employeeId=${emp.employeeId})}'|">삭제</button>
 		</div>
 	</table>
 	</div>

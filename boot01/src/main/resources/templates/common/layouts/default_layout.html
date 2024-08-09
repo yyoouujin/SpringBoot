@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+
+<!-- 외부 라이브러리 추가 -->
+<html xmlns:th="http://www.thymeleaf.org/" 
+	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+<meta charset="UTF-8">
+
+
+<th:block th:replace="~{common/config/default_config :: bootstrapConfig}"></th:block>
+<th:block th:replace="~{common/config/default_config :: jQueryConfig}"></th:block>
+
+
+<title>Insert title here</title>
+</head>
+<body>
+
+	<header th:insert="~{common/fragments/header :: HeaderFrag}"></header>
+
+	
+
+	<main>
+		<th:block layout:fragment="Content"></th:block>
+	</main>
+	
+	
+	<footer th:replace="~{common/fragments/footer :: FooterFrag}"></footer>
+	
+</body>
+</html>
+
+
+
+<!--/*
+
+1)
+footer는 대체 (replace)
+=>
+<footer th:replace="~{/common/fragments/footer :: FooterFrag}"></footer>
+
+2)
+header는 insert
+=>
+현재 헤더를 살리며, 자식 태그로 넣기
+
+3)
+<th:block layout:fragment="Content"></th:block>
+=>
+컨텐츠가 들어갈 위치를 등록
+(각각의 컨텐츠 위에 레이아웃이 들어가겠다는 코드 추가가 필요)
+
+4)
+list.html 파일 내 추가
+
+<html xmlns:th="http://www.thymeleaf.org/"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" -> 외부 라이브러리를 사용
+	layout:decorate="~{common/layouts/default_layout}" -> 비어있는 곳을 채워준다
+	layout:fragment="Content"> -> 본인이 Cotent 영역임을 지정
+	
+
+*/-->

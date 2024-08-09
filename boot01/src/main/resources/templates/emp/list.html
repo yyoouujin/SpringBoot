@@ -1,14 +1,25 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org/">
+<html xmlns:th="http://www.thymeleaf.org/"
+	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	  layout:decorate="~{common/layouts/default_layout}"
+	  layout:fragment="Content">
 <head>
 <meta charset="UTF-8">
 <meta name="context" th:value="${contextPath}">
 
 <title>전제조회</title>
 
-<!-- JQuery CDN 추가(구글 cdn 3버전) -->
+<!--/* 
+JQuery CDN 추가(구글 cdn 3버전)
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+*/-->
 
+<!--/* 
+fragment replace(header)
+th:replace"[파일경로 :: 조각 이름]"
+*/-->
+<th:block th:replace="~{common/config/default_config :: jQueryConfig}"></th:block>
+ 
 </head>
 <body>
 	<div>

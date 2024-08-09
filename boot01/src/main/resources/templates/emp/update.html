@@ -1,10 +1,16 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org/">
+<html xmlns:th="http://www.thymeleaf.org/"
+	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	  layout:decorate="~{common/layouts/default_layout}"
+	  layout:fragment="Content">
 <head>
 <meta charset="UTF-8">
 <title>수정</title>
-<!-- JQuery CDN 추가(구글 cdn 3버전) -->
+<!--/* JQuery CDN 추가(구글 cdn 3버전) 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+*/-->
+<th:block th:replace="~{/common/config/default_config :: jQueryConfig}"></th:block>
+
 </head>
 <body>
 	<h1>수정</h1>
@@ -63,9 +69,9 @@
 			data : dataObj //body(객체타입으로 구성되어야한다)
 			*/
 			
-			// 2-2) JSON 형식으로 보내기
+			// 2-2) JSON 형식으로 보내기(@RequestBody 어노테이션이 붙어있다면)
 			type : 'POST',
-			contentType : 'application/json',
+			contentType : 'application/json', 
 			data: JSON.stringify(dataObj)
 			
 		})
@@ -75,8 +81,6 @@
 		.fail(err => console.log(err));
 
 	}
-	
-	
 	
 	/*
 	{
@@ -91,7 +95,7 @@
 	
 	function getFormData(){
 		
-		let formAry = $('form[name="updateForm"]').serializeArray();
+		let formAry = $('form[name="updateForm"]').serializeArray(); //폼 태그 내부의 값을 JSON 형태의 문자열을 배열로 리턴
 		
 		let formObj = {};
 		$.each(formAry, function(idx, tag){
@@ -153,6 +157,8 @@ th:field 추가 시 HTML 태그의 id, name, value 속성을 자동 처리해준
 와 같이 날짜 포맷을 담당하는 부분을 가지고 있다면, 
 날짜 format 에 대한 부분은 thymeleaf 가 자동으로 처리해준다
 (input을 채울 떄 @DateTimeFormat이 같이 들어옴)
+=>
+타임리프가 지원하는 방식 활용하자!(수월해지니까)
 
 
 5)
